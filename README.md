@@ -167,6 +167,29 @@ curl http://localhost:${BACKEND_HOST_PORT}/health
     -d client_id=${SMART_CLIENT_ID}
   ```
 
+### SMART sandbox manager UI
+- Step 4 on `/epic` now includes a **multi-profile sandbox manager** that mirrors Epic’s storyboard shell. You can:
+  1. Add multiple SMART base URLs (e.g., SMART Health IT, hospital sandboxes) with friendly labels.
+  2. Persist them to `localStorage` for quick switching during demos.
+  3. Fetch each environment’s `.well-known/smart-configuration` and inspect required scopes, token endpoints, and supported capabilities before registering in Epic.
+- The Epic-style frame around the storyboard preview matches what clinicians see inside Epic. Use it to show how synthetic orders, vitals, and discharge readiness would appear when integrated.
+
+### Epic developer path (Open.epic/App Orchard)
+> Epic does **not** grant API access through FHIR.epic; you must enroll through Open.epic/App Orchard (now rebranded as Epic Nexus) when moving beyond this synthetic demo.
+
+1. **Create an Open.epic account** for your organization and select the "Clinicians or Administrative Users" audience.
+2. **Register an app shell**:
+   - Use the "General" use case unless you are specifically targeting CMS payer APIs.
+   - Fill in a public documentation URL (link to this repo or an internal doc is acceptable initially).
+   - Select incoming APIs (e.g., Patient/Encounter/Observation read scopes) that match what this demo already calls. Leave outgoing APIs empty unless you plan to implement CDS Hooks/CRD soon.
+3. **Configure SMART credentials**:
+   - Supply redirect URIs (e.g., `https://homelab.taild08007.ts.net/peds/epic/callback`) that map to your deployment.
+   - Record the assigned client ID/secret (if confidential) and add them to your `.env` / secrets store.
+4. **Request Epic-hosted sandbox access** when you’re ready for real launch-data. Until then, continue iterating with the synthetic backend + public SMART Health IT discovery URLs through the sandbox manager above.
+5. **Document the mapping** between Epic FHIR resources and our synthetic bundle using links to [FHIR.epic](https://fhir.epic.com). This keeps the data model aligned before you ever touch PHI.
+
+Once the above steps are complete, you can point the `/epic` SMART tester at Epic’s sandbox endpoints by simply adding a new profile via the sandbox manager UI and pasting the official base URL.
+
 ## Local adaptation checklist
 - See [`docs/local_adaptation_checklist.md`](docs/local_adaptation_checklist.md) for stakeholder + policy questions (pathway ownership, oxygen thresholds, order-set governance, data availability, IRB, privacy).
 
