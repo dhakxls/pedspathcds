@@ -17,6 +17,8 @@ const DEFAULT_SANDBOX: SandboxProfile = {
 
 const defaultClientId = import.meta.env.VITE_SMART_CLIENT_ID || "peds-path-demo-client";
 const defaultRedirectUri = import.meta.env.VITE_SMART_REDIRECT_URI || "https://example.org/smart-redirect";
+const epicClientId = import.meta.env.VITE_SMART_CLIENT_ID_EPIC || import.meta.env.VITE_SMART_CLIENT_ID_EPIC_NONPROD || "";
+const epicRedirectUri = import.meta.env.VITE_SMART_REDIRECT_URI_EPIC || defaultRedirectUri;
 const apiBase = import.meta.env.VITE_API_BASE_URL || "/peds/api";
 
 const buildAbsoluteApiUrl = (path: string) => {
@@ -53,9 +55,20 @@ const EpicPlaceholderPage = () => {
   const [refreshError, setRefreshError] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [patients, setPatients] = useState<PatientSummary[]>([]);
-  const [sandboxProfiles, setSandboxProfiles] = useState<SandboxProfile[]>([DEFAULT_SANDBOX]);
-  const [selectedSandboxId, setSelectedSandboxId] = useState<string>(DEFAULT_SANDBOX.id);
+  const initialProfiles: SandboxProfile[] = epicClientId
+    ? [
+        {
+          id: "epic-placeholder",
+          label: "Epic sandbox (add real base when available)",
+          baseUrl: "https://example-epic-base/fhir",
+        },
+        DEFAULT_SANDBOX,
+      ]
+    : [DEFAULT_SANDBOX];
+  const [sandboxProfiles, setSandboxProfiles] = useState<SandboxProfile[]>(initialProfiles);
+  const [selectedSandboxId, setSelectedSandboxId] = useState<string>(initialProfiles[0].id);
   const selectedSandbox = sandboxProfiles.find((profile) => profile.id === selectedSandboxId) ?? sandboxProfiles[0];
+  const [clientPreset, setClientPreset] = useState<"synthetic" | "epic">(() => (epicClientId ? "epic" : "synthetic"));
   const [sandboxConfig, setSandboxConfig] = useState<SmartConfiguration | null>(null);
   const [sandboxError, setSandboxError] = useState<string | null>(null);
   const [sandboxLoading, setSandboxLoading] = useState(false);
@@ -114,7 +127,7 @@ const EpicPlaceholderPage = () => {
         /* ignore malformed */
       }
     } else if (typeof window !== "undefined") {
-      localStorage.setItem(SANDBOX_STORAGE_KEY, JSON.stringify([DEFAULT_SANDBOX]));
+      localStorage.setItem(SANDBOX_STORAGE_KEY, JSON.stringify(initialProfiles));
     }
   }, []);
 
@@ -149,6 +162,22 @@ const EpicPlaceholderPage = () => {
   const handleLaunchChange = (field: keyof LaunchParams, value: string) => {
     setLaunchParams((prev) => ({ ...prev, [field]: value }));
   };
+
+  useEffect(() => {
+    if (clientPreset === "epic" && epicClientId) {
+      setLaunchParams((prev) => ({
+        ...prev,
+        client_id: epicClientId,
+        redirect_uri: epicRedirectUri,
+      }));
+    } else if (clientPreset === "synthetic") {
+      setLaunchParams((prev) => ({
+        ...prev,
+        client_id: defaultClientId,
+        redirect_uri: defaultRedirectUri,
+      }));
+    }
+  }, [clientPreset]);
 
   const handleTokenExchange = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -300,7 +329,29 @@ const EpicPlaceholderPage = () => {
         </article>
 
         <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-900">2. Build a launch URL</h3>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <h3 className="text-lg font-semibold text-slate-900">2. Build a launch URL</h3>
+            <div className="flex items-center gap-3 text-xs">
+              <span className="font-semibold uppercase tracking-wide text-slate-500">Client preset</span>
+              <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 p-1">
+                <button
+                  type="button"
+                  className={`rounded-full px-3 py-1 ${clientPreset === "synthetic" ? "bg-white text-slate-900" : "text-slate-500"}`}
+                  onClick={() => setClientPreset("synthetic")}
+                >
+                  Synthetic
+                </button>
+                <button
+                  type="button"
+                  className={`rounded-full px-3 py-1 ${clientPreset === "epic" ? "bg-white text-slate-900" : "text-slate-500"}`}
+                  onClick={() => setClientPreset("epic")}
+                  disabled={!epicClientId}
+                >
+                  Epic
+                </button>
+              </div>
+            </div>
+          </div>
           <div className="mt-4 space-y-4 text-sm">
             <label className="block">
               <span className="text-slate-600">Client ID</span>
@@ -509,7 +560,14 @@ const EpicPlaceholderPage = () => {
                   }`}
                 >
                   <div>
-                    <p className="font-semibold text-slate-800">{profile.label}</p>
+                    <p className="font-semibold text-slate-800">
+                      {profile.label}
+                      {profile.id === "epic-placeholder" && epicClientId && (
+                        <span className="ml-2 rounded-full border border-clinical-teal/40 px-2 py-0.5 text-[10px] uppercase tracking-wide text-clinical-teal">
+                          Epic preset
+                        </span>
+                      )}
+                    </p>
                     <p className="text-xs text-slate-500">{profile.baseUrl}</p>
                   </div>
                   <div className="flex items-center gap-2 text-xs">

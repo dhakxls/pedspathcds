@@ -173,6 +173,10 @@ curl http://localhost:${BACKEND_HOST_PORT}/health
   2. Persist them to `localStorage` for quick switching during demos.
   3. Fetch each environment’s `.well-known/smart-configuration` and inspect required scopes, token endpoints, and supported capabilities before registering in Epic.
 - The Epic-style frame around the storyboard preview matches what clinicians see inside Epic. Use it to show how synthetic orders, vitals, and discharge readiness would appear when integrated.
+- Frontend `.env` presets now support toggling between the synthetic client and Epic App Orchard/Nexus credentials:
+  - `VITE_SMART_CLIENT_ID` / `VITE_SMART_REDIRECT_URI` for the built-in synthetic backend.
+  - `VITE_SMART_CLIENT_ID_EPIC`, `VITE_SMART_CLIENT_ID_EPIC_NONPROD`, and `VITE_SMART_REDIRECT_URI_EPIC` for real Epic sandbox launches (kept blank in `.env.example`).
+  - A "Client preset" toggle in section 2 switches the launch URL form between these values. The Epic option only enables when the environment variables are populated, preventing accidental use when credentials are missing.
 
 ### Epic developer path (Open.epic/App Orchard)
 > Epic does **not** grant API access through FHIR.epic; you must enroll through Open.epic/App Orchard (now rebranded as Epic Nexus) when moving beyond this synthetic demo.
