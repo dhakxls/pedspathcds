@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - .env
+    environment:
+      - SERVER_LAN_IP=${SERVER_LAN_IP}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+    volumes:
+      - ./backend/app:/app/app:ro
+      - ./backend/app/data:/app/app/data:ro
+      - ./backend/app/config:/app/app/config:ro
+    ports:
+      - "127.0.0.1:${BACKEND_HOST_PORT}:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+        VITE_BASE_PATH: ${VITE_BASE_PATH}
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:${FRONTEND_HOST_PORT}:80"

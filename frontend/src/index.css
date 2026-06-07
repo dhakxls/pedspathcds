@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "Public Sans", "Source Sans 3", sans-serif;
+  color: #0f172a;
+  background-color: #f4f6fb;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.disclaimer-banner {
+  background: linear-gradient(90deg, rgba(14, 154, 167, 0.2), rgba(63, 136, 197, 0.2));
+  border-left: 4px solid #0e9aa7;
+}

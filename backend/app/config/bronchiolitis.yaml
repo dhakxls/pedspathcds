@@ -1,0 +1,41 @@
+age_range:
+  min_months: 1
+  max_months: 23
+pathway_name: "Bronchiolitis Clinical Pathway"
+order_set_name: "PED BRONCHIOLOTIS/BRONCHIOLITIS ORDER SET"
+oxygen_threshold_spo2: 90
+respiratory_score_tool: "Modified Tal Score"
+pathway_owner: "Pediatric Hospital Medicine"
+review_triggers:
+  cardiac_history: "Congenital heart disease"
+  chronic_lung_disease: "Chronic lung disease"
+  immunocompromised: "Immunocompromised status"
+  hfnc: "High-flow nasal cannula"
+  focal_findings: "Focal lung findings / pneumonia concern"
+  severe_wob: "Severe work of breathing"
+clinical_flags:
+  albuterol_without_asthma:
+    message: "Albuterol ordered without asthma/reactive airway history"
+  steroid_routine_use:
+    message: "Systemic steroid ordered for typical bronchiolitis"
+  cxr_without_indication:
+    message: "Chest X-ray ordered without focal findings or severe course"
+  antibiotic_without_bacterial:
+    message: "Antibiotic ordered without bacterial indication"
+  missing_pathway_use:
+    message: "Pathway/order set not documented"
+  missing_discharge_checklist:
+    message: "Discharge checklist incomplete"
+discharge_readiness:
+  likely_ready:
+    feeding_adequate: true
+    oxygen_support: ["room_air"]
+    work_of_breathing_allow: ["mild"]
+  not_ready:
+    feeding_adequate: false
+    oxygen_support: ["low_flow", "hfnc"]
+    work_of_breathing_block: ["moderate", "severe"]
+uncertainty_notes:
+  - "Oxygen threshold may vary by altitude—confirm local policy."
+  - "Consider RSV versus other viral etiologies when seasonality shifts."
+  - "Consult respiratory therapy for HFNC titration per institutional protocol."

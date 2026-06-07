@@ -1,0 +1,8 @@
+institution: "Demo Children's"
+lan_warning: "This prototype uses synthetic data only and is not for clinical use."
+reverse_proxy_tip: "Front services behind Caddy, Traefik, or Nginx Proxy Manager per homelab standards."
+contacts:
+  - role: "Pediatric HM"
+    name: "Dr. Lee"
+  - role: "QI Partner"
+    name: "J. Morgan"
