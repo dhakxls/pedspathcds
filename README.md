@@ -202,3 +202,8 @@ curl http://localhost:${BACKEND_HOST_PORT}/health
   - Extend by wiring the log to your alerting channel (email/Slack) if failures appear.
 
 Stay mindful of homelab resource sharing; do not disrupt existing services while experimenting.
+
+## License
+- Copyright 2024 Martin Vo.
+- Released under the [Apache License 2.0](LICENSE).
+- Contributions are welcome via pull requests; submitting changes implies agreement to the Apache-2.0 terms.
