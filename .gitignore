@@ -2,6 +2,7 @@
 frontend/node_modules/
 frontend/dist/
 frontend/test-results/
+frontend/*.tsbuildinfo
 
 # Python
 backend/.venv/
@@ -10,3 +11,24 @@ __pycache__/
 
 # Env
 .env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Downloaded docs / temp files
+*.pdf
+*.tmp
+*.bak
+*.backup
